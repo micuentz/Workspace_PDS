@@ -13,7 +13,7 @@ import scipy.io as io
 import warnings
 warnings.filterwarnings('ignore')
 
-coef = 10001
+coef = 3001
 den_fir = 1.0
 
 ripple = 0.5
@@ -71,9 +71,9 @@ regs_interes = (
 
 ECG_fir = signal.lfilter(taps, den_fir, ecg_one_lead)
 #ECG_f_iir = signal.sosfiltfilt(sos, ecg_one_lead)
-#ECG_f_butt = signal.sosfilt(sos, ecg_one_lead)
+ECG_f_iir = signal.sosfilt(sos, ecg_one_lead)
 
-demora = -74
+demora = int((coef - 1) / 2)
 
 for ii in regs_interes:
     
@@ -81,9 +81,9 @@ for ii in regs_interes:
     zoom_region = np.arange(np.max([0, ii[0]]), np.min([cant_muestras, ii[1]]), dtype='uint')
     
     plt.figure(figsize=(fig_sz_x, fig_sz_y), dpi= fig_dpi, facecolor='w', edgecolor='k')
-    plt.plot(zoom_region, ECG_fir[zoom_region + demora], label='Filtro FIR', linewidth=2)
+    #plt.plot(zoom_region, ECG_fir[zoom_region + demora], label='Filtro FIR', linewidth=2)
     plt.plot(zoom_region, ecg_one_lead[zoom_region], label='ECG', linewidth=2)
-    #plt.plot(zoom_region, ECG_f_iir[zoom_region], label='Filtro IIR')
+    plt.plot(zoom_region, ECG_f_iir[zoom_region], label='Filtro IIR')
     #plt.plot(zoom_region, ECG_f_butt[zoom_region + demora], label='Win')
     
     plt.title('ECG filtrado de ' + str(ii[0]) + ' a ' + str(ii[1]) )
